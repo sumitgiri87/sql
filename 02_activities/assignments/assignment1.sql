@@ -131,13 +131,27 @@ When inserting the new vendor, you need to appropriately align the columns to be
 -> To insert the new row use VALUES, specifying the value you want for each column:
 VALUES(col1,col2,col3,col4,col5) 
 */
+DROP TABLE IF EXISTS temp.new_vendor;
 CREATE TEMP TABLE new_vendor AS
 SELECT *
 FROM vendor;
 
+INSERT INTO new_vendor (
+    vendor_id, 
+    vendor_name, 
+    vendor_type, 
+    vendor_owner_first_name, 
+    vendor_owner_last_name
+)
+VALUES (
+    10, 
+    'Thomass Superfood Store', 
+    'Fresh Focused', 
+    'Thomas', 
+    'Rosenthal'
+);
 
-INSERT INTO new_vendor (vendor_id, vendor_name, vendor_description, vendor_owner, vendor_type)
-VALUES (10, 'Thomass Superfood Store', 'Fresh Focused store', 'Thomas Rosenthal', 'Fresh Focused');
+SELECT * FROM new_vendor;
 
 
 
@@ -147,10 +161,12 @@ VALUES (10, 'Thomass Superfood Store', 'Fresh Focused store', 'Thomas Rosenthal'
 
 HINT: you might need to search for strfrtime modifers sqlite on the web to know what the modifers for month 
 and year are! */
-SELECT customer_id,
-       STRFTIME('%m', purchase_date) AS month,
-       STRFTIME('%Y', purchase_date) AS year
+SELECT 
+    customer_id,
+    STRFTIME('%m', market_date) AS month,
+    STRFTIME('%Y', market_date) AS year
 FROM customer_purchases;
+
 
 
 /* 2. Using the previous query as a base, determine how much money each customer spent in April 2022. 
@@ -159,9 +175,10 @@ Remember that money spent is quantity*cost_to_customer_per_qty.
 HINTS: you will need to AGGREGATE, GROUP BY, and filter...
 but remember, STRFTIME returns a STRING for your WHERE statement!! */
 
-SELECT customer_id,
-       SUM(quantity * cost_to_customer_per_qty) AS total_spent
+SELECT 
+    customer_id,
+    SUM(quantity * cost_to_customer_per_qty) AS total_spent
 FROM customer_purchases
-WHERE STRFTIME('%m', purchase_date) = '04'
-  AND STRFTIME('%Y', purchase_date) = '2022'
-GROUP BY customer_id; 
+WHERE STRFTIME('%m', market_date) = '04'
+  AND STRFTIME('%Y', market_date) = '2022'
+GROUP BY customer_id;
