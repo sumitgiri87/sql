@@ -54,7 +54,53 @@ The store wants to keep customer addresses. Propose two architectures for the CU
 **HINT:** search type 1 vs type 2 slowly changing dimensions. 
 
 ```
-Your answer...
+To handle customer addresses, we can design the CUSTOMER_ADDRESS table in two different ways depending on whether we want to keep history of address changes or simply overwrite the old ones.
+
+Option 1: Overwrite Design (Type 1 Slowly Changing Dimension)
+
+Table Structure:
+
+CUSTOMER_ADDRESS
+******************
+address_id
+customer_id
+street
+city
+state
+postal_code
+country
+
+
+In this case, whenever a customer changes their address, the existing record is updated with the new details. Very simple to manage. No historical information is preserved, past addresses are lost.
+
+
+
+Option 2: History-Retaining Design (Type 2 Slowly Changing Dimension)
+
+Table Structure:
+
+CUSTOMER_ADDRESS
+******************
+address_id
+customer_id
+street
+city
+state
+postal_code
+country
+start_date
+end_date
+is_current (boolean)
+
+When a customer moves, a new row is inserted for the new address. The old record is marked with end_date and is_current = FALSE, while the new one is marked is_current = TRUE.
+
+
+In this case full history of customer address changes is retained. Useful for analytics. But requires more storage. Queries become slightly more complex.
+
+
+Type 1 (Overwrite): Simple and lightweight, but loses history.
+
+Type 2 (Retain History): Preserves changes over time, but adds complexity.
 ```
 
 ***
